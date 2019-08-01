@@ -1,0 +1,23 @@
+{
+  "name": "bamazon_app",
+  "version": "1.0.0",
+  "description": "CLI Interface that allows you to virtually moderate a warehouse retail stock storefront (etc.)",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Cresence/bamazon_app.git"
+  },
+  "author": "Devon Harris (Email: devharris93@gmail.com)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Cresence/bamazon_app/issues"
+  },
+  "dependencies": {
+    "inquirer": "6.4.1",
+    "mysql": "2.17.1"
+  },
+  "homepage": "https://github.com/Cresence/bamazon_app#readme"
+}
