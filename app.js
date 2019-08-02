@@ -4,140 +4,96 @@ const inquirer = require('inquirer');
 const mysql = require('mysql');
 const access = keys.access;
 
-const bidAsk = async () => {
-    const question =  await inquirer.prompt([
-        {
-            name:"bid",
-            message:"What item do you want to bid on?"
+const connection = mysql.createConnection(access);
+
+function start() {
+    inquirer
+      .prompt({
+        name: 'buy',
+        type: 'list',
+        message: 'Would you like to [BUY] an product or [EXIT]?',
+        choices: ['BUY', 'EXIT'],
+      })
+      .then(function(answer) {
+        // based on their answer, either call the bid or the post functions
+        if (answer.buy === 'BUY') {
+          readItems();
+        } 
+        // else if (answer.postOrBid === 'BID') {
+        //   bidAuction();
+        // } 
+        else {
+          connection.end();
         }
-    ])
+      });
+  }
+  function readItemsSmall() {
+    connection.query('SELECT * FROM products', function (err, results){
+      if (err) throw err;
+      console.log(results)
+        });
+    };
 
-    const answer = question.bid;
-    console.log(answer);
-}
-
-// bidAsk();
-
-const bidPost = async () => {
-    const question = await inquirer.prompt([
-        {
-            name:"money",
-            message:"What amount do you want to input?",
-            // validate: function validateNumber(money) {
-            //     if (isNaN(money)){
-            //         return 'Not a number'
-            //     }
-            //     return money
-            // }
-        }
-    ])
-
-    const answer = question.money;
-
-    function validateNumber(answer) {
-            if (isNaN(answer)){
-                console.log('Not a number');
-                // bidPost();
-            }
-            return answer
-        }
-    console.log(`You've successfully bid $${answer}!`);
-    validateNumber(answer);
-}
-
-
-// bidPost();
-
-
-// const connection = mysql.createConnection({
-//   host: 'localhost',
-//   // Your port; if not 3306
-//   port: 3306,
-//   // Your username
-//   user: 'root',
-//   // Your password
-//   password: '@7rnO9Ej',
-//   database: 'bamazon_db',
-// });
-
-const connection = mysql.createConnection(access)
-
-connection.connect(function(err) {
-    if (err) throw err;
-    console.log('connected as id ' + connection.threadId + '\n');
-    readProducts();
-    // connection.end();
-//   createProduct();
-
-});
-
-// function createProduct() {
-//   console.log('Inserting a new product...\n');
-//   var query = connection.query(
-//     'INSERT INTO products SET ?',
-//     {
-//       flavor: 'Rocky Road',
-//       price: 3.0,
-//       quantity: 50,
-//     },
-//     function(err, res) {
+// function readItems() {
+//     connection.query('SELECT * FROM products', function (err, results){
 //       if (err) throw err;
-//       console.log(res.affectedRows + ' product inserted!\n');
-//       // Call updateProduct AFTER the INSERT completes
-//       updateProduct();
-//     },
-//   );
+//       inquirer
+//         .prompt([
+//           {
+//             name: 'choice',
+//             type: 'rawlist',
+//             choices: function() {
+//               let choiceArray = [];
+//               for (let i = 0; i < results.length; i++) {
+//                 choiceArray.push(results[i].item_name);
+//               }
+//               return choiceArray;
+//             },
+//             message: 'What product would you like to buy?',
+//           },
+//           {
+//             name: 'item_quantity',
+//             type: 'input',
+//             message: 'How much would you like to item_quantity?',
+//           },
+//         ])
+//         .then(function(answer) {
+//           // get the information of the chosen item
+//           let chosenItem;
+//           for (let i = 0; i < results.length; i++) {
+//             if (results[i].item_name === answer.choice) {
+//               chosenItem = results[i];
+//             }
+//           }
 
-  // logs the actual query being run
-//   console.log(query.sql);
-// }
+//           // determine if item_quantity was high enough
+//           if (chosenItem.stock_quantity < parseInt(answer.item_quantity)) {
+//             // item_quantity was high enough, so update db, let the user know, and start over
+//             connection.query(
+//               'UPDATE auctions SET ? WHERE ?',
+//               [
+//                 {
+//                   stock_quantity: stock_quantity-answer.item_quantity,
+//                 },
+//                 {
+//                   item_id: chosenItem.id,
+//                 },
+//               ],
+//               function(error) {
+//                 if (error) throw err;
+//                 console.log('Product has been successfully saved to your cart!');
+//                 start();
+//               },
+//             );
+//           } else {
+//             // item_quantity wasn't high enough, so apologize and start over
+//             console.log(`We don't have enough of that product to sell at that capacity. Try again...`);
+//             start();
+//           }
+//         });
+//     });
+// };
 
-const updateProduct = () => {
-  console.log('Updating database...\n');
-  const query = connection.query(
-    'UPDATE products SET ? WHERE ?',
-    [
-      {
-        quantity: 100,
-      },
-      {
-        flavor: 'Rocky Road',
-      },
-    ],
-    function(err, res) {
-      if (err) throw err;
-      console.log(res.affectedRows + ' products updated!\n');
-      // Call deleteProduct AFTER the UPDATE completes
-    //   deleteProduct();
-    },
-  );
+// start();
 
-  // logs the actual query being run
-  console.log(query.sql);
-}
-
-const deleteProduct = () => {
-  console.log('Deleting all strawberry icecream...\n');
-  connection.query(
-    'DELETE FROM products WHERE ?',
-    {
-      flavor: 'strawberry',
-    },
-    function(err, res) {
-      if (err) throw err;
-      console.log(res.affectedRows + ' products deleted!\n');
-      // Call readProducts AFTER the DELETE completes
-    //   readProducts();
-    },
-  );
-}
-
-const readProducts = () => {
-  console.log('Loading all products...\n');
-  connection.query('SELECT * FROM products', function(err, res) {
-    if (err) throw err;
-    // Log all results of the SELECT statement
-    console.log(res);
-    connection.end();
-  });
-}
+readItemsSmall();
