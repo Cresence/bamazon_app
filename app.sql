@@ -42,4 +42,4 @@ INSERT INTO products (product_name,department_name,price,stock_quantity)
 VALUES ('30 Piece Mixed Plastic Utensils', 'Kitchen', 3.99, 200);
 
 INSERT INTO products (product_name,department_name,price,stock_quantity)
-VALUES ('F*R*I*E*N*D*S T-Shirt', 'Apparel', 9.99, 30);
+VALUES ('"Friends" T-Shirt', 'Apparel', 9.99, 30);
